@@ -58,7 +58,7 @@ Initializes and configures the Express server, sets up middleware, and ties toge
 
 │   ├── users.json
 
-├── app.js
+├── index.js
 
 ├── package.json
 
@@ -126,7 +126,7 @@ npm install
 
 ```bash
 
-node app.js
+node index.js
 
 ```
 
