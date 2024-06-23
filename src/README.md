@@ -1,28 +1,26 @@
-## Recipes Express Application
+## Recipes Express Application - Comprehensive Guide
 
 ## Overview
 
-The Recipes Express application is a simple API that serves recipe data from a JSON file. It is built using Node.js and Express.js and follows a modular architecture, separating concerns into different layers such as services, controllers, and routers.
+The Recipes Express application is a web API that allows users to fetch and manage recipes stored in a JSON file. It utilizes Node.js and Express.js, implementing a layered architecture with a focus on service, controller, and router layers. The application also incorporates authentication using JSON Web Tokens (JWT) and Passport.js to secure API endpoints.
 
 ## Application Structure
 
-The application is structured into the following parts:
+### Service Layer
 
-## Service Layer
+Handles business logic and data manipulation, primarily focusing on reading and writing to the `recipes.json` file.
 
-Handles the logic for fetching recipe data from a JSON file.
+### Controller Layer
 
-## Controller Layer
+Processes incoming requests, utilizes services to retrieve data or perform actions, and sends responses to the client.
 
-Manages HTTP requests and responses, interacting with the service layer to get data.
+### Router Layer
 
-## Router Layer
+Defines URL routes and associates them with specific controller functions.
 
-Defines the API routes and maps them to the appropriate controller functions.
+### Main Application File
 
-## Main Application File
-
-Sets up the Express server, middleware, and integrates all parts together.
+Initializes and configures the Express server, sets up middleware, and ties together routers.
 
 ## File Structure
 
@@ -34,19 +32,31 @@ Sets up the Express server, middleware, and integrates all parts together.
 
 ├── /controllers
 
-│   └── recipes.js
+│   ├── recipes.js
 
-├── /db
-
-│   └── recipes.json
-
-├── /routers
-
-│   └── recipes.js
+│   └── users.js
 
 ├── /services
 
-│   └── recipes.js
+│   ├── recipes.js
+
+│   └── users.js
+
+├── /routers
+
+│   ├── recipes.js
+
+│   └── users.js
+
+├── /middleware
+
+│   ├── auth.js
+
+├── /db
+
+│   ├── recipes.json
+
+│   ├── users.json
 
 ├── app.js
 
@@ -58,31 +68,43 @@ Sets up the Express server, middleware, and integrates all parts together.
 
 ## How It Works
 
-## Service Layer (`services/recipes.js`)
+### Service Layer
 
-Reads the recipes data from a JSON file located in the `db` directory.
+- `services/recipes.js`: Interacts directly with `db/recipes.json` to fetch, add, or modify recipes.
 
-## Controller Layer (`controllers/recipes.js`)
+- `services/users.js`: Manages user data and handles authentication-related functionalities.
 
-Contains the `getAll` function that fetches all recipes using the service layer and sends them as a JSON response.
+### Controller Layer
 
-## Router Layer (`routers/recipes.js`)
+- `controllers/recipes.js`: Contains functions like `getAllRecipes`, `getRecipeById`, etc.
 
-Sets up the route `/api/v1/recipes` and maps it to the `getAll` controller function.
+- `controllers/users.js`: Handles user authentication, login, and registration processes.
 
-## Main Application (`app.js`)
+### Router Layer
 
-Configures the Express server, middleware, and routes.
+- `routers/recipes.js`: Routes like `/api/v1/recipes` are defined here.
 
-## How to Run the Application
+- `routers/users.js`: Defines authentication routes such as `/api/v1/login` and `/api/v1/register`.
 
-## Prerequisites
+### Authentication with JWT and Passport
 
-- Node.js installed on your machine.
+- **User Registration and Login**: Users can register and log in through the `/register` and `/login` endpoints. Upon successful login, a JWT is generated.
 
-## Steps to Run
+- **JWT Generation**: Using Passport's `jwt` strategy, a token is created and signed with a secret key.
 
-## Clone the Repository
+- **Middleware Authentication**: The `auth.js` middleware uses Passport to verify the JWT from the `Authorization` header in each request to protected routes.
+
+- **Protected Routes**: Routes that require authentication are secured by the `auth.js` middleware, ensuring that only requests with a valid JWT can access them.
+
+## Setup and Installation
+
+### Prerequisites
+
+- Install Node.js and npm on your machine.
+
+### Steps to Run
+
+#### 1. Clone the Repository
 
 ```bash
 
@@ -92,7 +114,7 @@ cd recipes-express
 
 ```
 
-## Install Dependencies
+#### 2. Install Dependencies
 
 ```bash
 
@@ -100,7 +122,7 @@ npm install
 
 ```
 
-## Run the Server
+#### 3. Run the Server
 
 ```bash
 
@@ -108,82 +130,38 @@ node app.js
 
 ```
 
-## Access the API
+## Accessing the API
 
-Open your browser or use a tool like curl or Postman to visit `http://localhost:8081/api/v1/recipes`.
+After starting the server, you can use a browser or tools like curl or Postman to interact with the API.
 
-## Example Request
-
-To fetch all recipes, send a GET request to:
+### Example Request: Get All Recipes
 
 ```bash
 
-http://localhost:8081/api/v1/recipes
+curl http://localhost:8081/api/v1/recipes
 
 ```
 
-## Expected Response
+### Example Request: User Login
 
-```json
+```bash
 
-{
-
-  "data": [
-
-    {
-
-      "id": 1,
-
-      "name": "Chicken Vesuvio",
-
-      "healthLabels": ["Sugar-Conscious", "Peanut-Free", "Tree-Nut-Free"],
-
-      "cookTimeMinutes": 60,
-
-      "prepTimeMinutes": 10,
-
-      "ingredients": [
-
-        "1/2 cup olive oil",
-
-        "5 cloves garlic, peeled",
-
-        "2 large russet potatoes, peeled and cut into chunks",
-
-        "1 3-4 pound chicken, cut into 8 pieces (or 3 pound chicken legs)",
-
-        "3/4 cup white wine",
-
-        "3/4 cup chicken stock",
-
-        "3 tablespoons chopped parsley",
-
-        "1 tablespoon dried oregano",
-
-        "Salt and pepper",
-
-        "1 cup frozen peas, thawed"
-
-      ]
-
-    }
-
-    // ... more recipes
-
-  ]
-
-}
+curl -X POST -H "Content-Type: application/json" -d '{"username": "test", "password": "test"}' http://localhost:8081/api/v1/login
 
 ```
 
-## Additional Information
+## Additional Features
 
-- The application logs incoming requests to the console with the request method, path, and timestamp.
+- **Logging**: Each API request is logged with details like method, path, and timestamp for debugging.
 
-- You can modify the `db/recipes.json` file to add, remove, or update the recipes data.
+- **Modifying Data**: The JSON files in the `db` directory can be updated directly to add or change recipes and users.
 
-- Feel free to contribute to this project by submitting pull requests or opening issues for any improvements or bug fixes.
+## Contributing
+
+Contributions are welcome! You can contribute by submitting pull requests with enhancements or fixes.
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
+This project is licensed under the MIT License, which allows for reuse with minimal restrictions.
+
+By following these guidelines, even a beginner can understand how the Recipes Express application functions, set it up, and start interacting with its APIs.
